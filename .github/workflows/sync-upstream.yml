@@ -14,5 +14,5 @@ jobs:
       - name: Sync Upstream
         uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
         with:
-          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          target_repo_token: ${{ secrets.GH_TOKEN }}
           upstream_sync_repo: lankerr/2026-glados-checkin
