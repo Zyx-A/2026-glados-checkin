@@ -39,6 +39,7 @@ jobs:
         # REQUIRED 'target_repo_token' exactly like this!
         target_repo_token: ${{ secrets.GH_TOKEN }}
         upstream_sync_branch: ${{ vars.UPSTREAM_BRANCH || 'main' }}
+        # UPSTREAM_REPO = <上游仓库用户名/仓库名>
         upstream_sync_repo: ${{ vars.UPSTREAM_REPO }}
         upstream_repo_access_token: ${{ secrets.UPSTREAM_REPO_SECRET }}
 
