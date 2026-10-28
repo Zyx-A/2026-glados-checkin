@@ -2,8 +2,7 @@ name: 'Upstream Sync'
 
 on:
   schedule:
-    - cron:  '0 7 * * 1,4'
-    # scheduled at 07:00 every Monday and Thursday
+    - cron:  '0 1 * * *'
 
   workflow_dispatch:  # click the button on Github repo!
     inputs:
@@ -11,6 +10,9 @@ on:
         description: 'Fork Sync Test Mode'
         type: boolean
         default: false
+
+permissions:
+  contents: write
 
 jobs:
   sync_latest_from_upstream:
@@ -25,9 +27,9 @@ jobs:
       with:
         # optional: set the branch to checkout,
         # sync action checks out your 'target_sync_branch' anyway
-        ref:  my-branch
+        ref:  ${{ vars.LOCAL_BRANCH || 'main' }}
         # REQUIRED if your upstream repo is private (see wiki)
-        persist-credentials: false
+        # persist-credentials: false
 
     # REQUIRED step
     # Step 2: run the sync action
@@ -39,21 +41,20 @@ jobs:
         # REQUIRED 'target_repo_token' exactly like this!
         target_repo_token: ${{ secrets.GH_TOKEN }}
         upstream_sync_branch: ${{ vars.UPSTREAM_BRANCH || 'main' }}
-        # UPSTREAM_REPO = <上游仓库用户名/仓库名>
         upstream_sync_repo: ${{ vars.UPSTREAM_REPO }}
-        upstream_repo_access_token: ${{ secrets.UPSTREAM_REPO_SECRET }}
+        # upstream_repo_access_token: ${{ secrets.UPSTREAM_REPO_SECRET }}
 
         # Set test_mode true during manual dispatch to run tests instead of the true action!!
         test_mode: ${{ inputs.sync_test_mode }}
-      
+
     # Step 3: Display a sample message based on the sync output var 'has_new_commits'
     - name: New commits found
       if: steps.sync.outputs.has_new_commits == 'true'
       run: echo "New commits were found to sync."
-    
+
     - name: No new commits
       if: steps.sync.outputs.has_new_commits == 'false'
       run: echo "There were no new commits."
-      
+
     - name: Show value of 'has_new_commits'
       run: echo ${{ steps.sync.outputs.has_new_commits }}
